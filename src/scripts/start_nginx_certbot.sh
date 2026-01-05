@@ -24,6 +24,12 @@ trap "clean_exit" EXIT
 # If the environment variable `DEBUG=1` is set, then this message is printed.
 debug "Debug messages are enabled"
 
+# Check if IPv6 should be disabled in the redirector config.
+if [ "${DISABLE_IPV6,,}" = "true" ] || [ "${DISABLE_IPV6}" = "1" ]; then
+    info "Disabling IPv6 in redirector.conf"
+    sed -i 's/^.*listen \[::\]:80.*/    # &/' /etc/nginx/conf.d/redirector.conf
+fi
+
 # Immediately symlink files to the correct locations and then run
 # 'auto_enable_configs' so that Nginx is in a runnable state
 # This will temporarily disable any misconfigured servers.
